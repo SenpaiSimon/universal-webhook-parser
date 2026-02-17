@@ -5,7 +5,7 @@ export const parser = sqliteTable('parser', {
 			.primaryKey()
 			.$defaultFn(() => crypto.randomUUID()),
 	title: text('title').notNull(),
-	descrition: text('description'),
+	description: text('description'),
 	code: text('code').notNull()
 });
 
@@ -14,7 +14,7 @@ export const hooks = sqliteTable('hooks', {
 			.primaryKey()
 			.$defaultFn(() => crypto.randomUUID()),
 	title: text('title').notNull(),
-	descrition: text('description'),
+	description: text('description'),
 	parserId: text('parser_id')
 			.references(() => parser.id)
 			.notNull(),
