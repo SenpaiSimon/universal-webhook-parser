@@ -28,7 +28,7 @@ export const actions = {
     const title = data.get("title") as string;
 
     if(!title || title.trim() === "") {
-      return fail(400, { error: "Title is required" });
+      return fail(400, { message: "Title is required" });
     }
 
     await db.insert(parser).values({
@@ -36,22 +36,22 @@ export const actions = {
       code: getCodeTemplate()
     });
 
-    return { success: true };
+    return { success: true, message: "Parser created" };
   },
   delete: async ({ request }) => {
     const data = await request.formData();
     const id = data.get("id") as string;
 
     if(!id) {
-      return fail(400, { error: "ID is required" });
+      return fail(400, { message: "ID is required" });
     }
 
     const res = await db.delete(parser).where(eq(parser.id, id));
 
     if(res.rowsAffected === 0) {
-      return fail(404, { error: "Parser not found" });
+      return fail(404, { message: "Parser not found" });
     } else {
-      return { success: true };
+      return { success: true, message: "Parser deleted" };
     }
   }
 

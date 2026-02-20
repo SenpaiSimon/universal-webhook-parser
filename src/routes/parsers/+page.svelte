@@ -1,38 +1,22 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import BasicAddComponent from '$lib/components/BasicAddComponent.svelte';
 	import type { ActionData, PageData } from './$types';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
+
+	let parsers = $derived(
+		data.parsers.map((parser) => ({
+			id: parser.id,
+			title: parser.title
+		}))
+	);
+
+	let errMsg = $derived(form?.error ? form.error : '');
 </script>
 
 <div>
-	<h1>Parsers</h1>
-	{#if form?.error}
-		<p style="color: red">{form.error}</p>
-	{/if}
-	{#if form?.success}
-		<p style="color: green">Nice</p>
-	{/if}
-	<form method="POST" action="?/new" use:enhance>
-		<input type="text" name="title" placeholder="Enter parser title" />
-
-		<button type="submit">New Parser</button>
-	</form>
-
-	<h1>You have {data.parsers.length} parsers</h1>
-	<ul>
-		{#each data.parsers as parser}
-			<li>
-				<div>
-					<a href="/parsers/{parser.id}">{parser.title}</a>
-					<form method="POST" action="?/delete" use:enhance>
-						<input type="hidden" name="id" value={parser.id} />
-						<button type="submit">Delete</button>
-					</form>
-				</div>
-			</li>
-		{/each}
-	</ul>
+	<BasicAddComponent title="Parsers" name="Parser" listItems={parsers} {errMsg} />
 </div>
 
 <style>

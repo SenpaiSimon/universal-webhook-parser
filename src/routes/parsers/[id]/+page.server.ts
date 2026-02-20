@@ -26,11 +26,11 @@ export const actions = {
     const description = data.get("description") as string;
 
     if(!title || title.trim() === "") {
-      return fail(400, { error: "Title is required" });
+      return fail(400, { message: "Title is required" });
     }
 
     if(!code || code.trim() === "") {
-      return fail(400, { error: "Code is required" });
+      return fail(400, { message: "Code is required" });
     }
 
     const res = await db.update(parser).set({
@@ -40,9 +40,9 @@ export const actions = {
     }).where(eq(parser.id, id));
 
     if(res.rowsAffected === 0) {
-      return fail(404, { error: "Parser not found" });
+      return fail(404, { message: "Parser not found" });
     } else {
-      return { success: true };
+      return { success: true, message: "Parser updated successfully" };
     }
   }
 } satisfies Actions;

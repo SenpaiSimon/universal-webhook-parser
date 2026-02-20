@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import { genInterfaceString, genVarsInit, type WebhookPayload } from './types';
+import { genParserInterfaceString, genParserVarInit, type WebhookPayload } from './types';
 
 
 export function executeSnippetWithPayload(
@@ -11,9 +11,9 @@ export function executeSnippetWithPayload(
 ): string {
   // Inject the payload with proper TypeScript typing
   const injectedCode = `
-${genInterfaceString()}
+${genParserInterfaceString()}
 
-${genVarsInit(webhookPayload)}
+${genParserVarInit(webhookPayload)}
 
 ${userCode}
 

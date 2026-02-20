@@ -2,11 +2,12 @@ import { json } from '@sveltejs/kit';
 import type { RouteParams } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { eq } from 'drizzle-orm';
-import { hooks, parser } from '$lib/server/db/schema.js';
+import { hooks, task } from '$lib/server/db/schema.js';
 import { base64Decode } from '$lib/helpers/encoders.js';
-import { handleWebhook } from '$lib/runner/webhook-handler.js';
+import { handleWebhook } from '$lib/runner/parser/webhook-handler.js';
+import { TargetMapping, type TargetType } from '$lib/targets/types.js';
 
-export type IncHookStatus = 'success' | 'invalid' | 'execution_error' | 'result_error';
+export type IncHookStatus = 'success' | 'invalid' | 'execution_error' | 'result_error' | 'pending' | 'webhook_error' | 'config_error';
 
 export type IncHookMethod = 'GET' | 'POST';
 
@@ -24,6 +25,14 @@ function genResponse(status: IncHookStatus, id: string, method: IncHookMethod): 
     }
 }
 
+async function setTaskState(taskId: string, status: IncHookStatus, parsedResult?: any) {
+    await db.update(task).set({
+        status,
+        endTime: new Date().toISOString(),
+        parsed_result: parsedResult ? JSON.stringify(parsedResult) : "{}"
+    }).where(eq(task.id, taskId));
+}
+
 async function HandleRequest(params: RouteParams, method: IncHookMethod, payload: any) {
     const id = params.id;
 
@@ -36,16 +45,31 @@ async function HandleRequest(params: RouteParams, method: IncHookMethod, payload
         return json(genResponse('invalid', id, method), { status: 400 });
     }
 
-    // get the corresponding parser
+    // get the corresponding parser and also the target
     const parserEntry = await db.query.parser.findFirst({
         where: eq(hooks.id, hook.parserId)
+    });
+
+    const targetEntry = await db.query.target.findFirst({
+        where: eq(hooks.id, hook.targetId)
     });
 
     if(!parserEntry) {
         return json(genResponse('invalid', id, method), { status: 400 });
     }
 
-    // TODO add a task entry and mark as pending
+    if(!targetEntry) {
+        return json(genResponse('invalid', id, method), { status: 400 });
+    }
+
+    // task is pending
+    const [taskEntry] = await db.insert(task).values({
+        hookId: id,
+        status: 'pending',
+        webhook_payload: JSON.stringify(payload),
+        startTime: new Date().toISOString(),
+    }).returning();
+    
 
     const code = base64Decode(parserEntry.code);
 
@@ -55,17 +79,36 @@ async function HandleRequest(params: RouteParams, method: IncHookMethod, payload
 
         // was it result?
         if(!res.success) {
-            // todo mark task as failed
+            await setTaskState(taskEntry.id, 'result_error', { msg: "result.success was false"});
+
             return json(genResponse('result_error', id, method), { status: 500 });
         }
         
         // send the result to the out hooks callback url with required method
-        // console.log(`Parsed result for hook ${id}:`, res);
+        const targetType = targetEntry.targetImpl as TargetType;
+        const targetSettings = JSON.parse(targetEntry.settings);
+
+        if(targetSettings === null || Object.keys(targetSettings).length === 0) {
+            await setTaskState(taskEntry.id, 'config_error', { msg: "Target Settings were empty" });
+            console.error("No target settings found for:", targetEntry.id);
+            return json(genResponse('config_error', id, method), { status: 500 });
+        }
+
+        const target = TargetMapping[targetType];
+
+        if(!target) {
+            await setTaskState(taskEntry.id, 'execution_error', { msg: "No target implementation found for type: " + targetType });
+            console.error("No target implementation found for:", targetType);
+            return json(genResponse('execution_error', id, method), { status: 500 });
+        }
+
+        await target.handler(res, targetSettings);
     
         // mark task as success
+        await setTaskState(taskEntry.id, 'success', res);
         return json(genResponse('success', id, method));
     } catch(error) {
-        // todo mark task as failed
+        await setTaskState(taskEntry.id, 'execution_error', { msg: error instanceof Error ? error.message : "Unknown error" });
         console.error("Error executing webhook handler:", error);
         return json(genResponse('execution_error', id, method), { status: 500 });
     }

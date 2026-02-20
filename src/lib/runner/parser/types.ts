@@ -10,7 +10,7 @@ export interface ParsedResult {
   payload?: any;
 }
 
-export function genInterfaceString(): string {
+export function genParserInterfaceString(): string {
   const block = `
 interface WebhookPayload {
   timestamp: string;
@@ -27,7 +27,7 @@ interface ParsedResult {
   return block;
 }
 
-export function genVarsInit(payload: WebhookPayload): string {
+export function genParserVarInit(payload: WebhookPayload): string {
   const block = `
 const payload: WebhookPayload = ${JSON.stringify(payload)};
 const result: ParsedResult = {
