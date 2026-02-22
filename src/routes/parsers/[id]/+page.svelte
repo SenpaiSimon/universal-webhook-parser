@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import CodeEditor from '$lib/components/CodeEditor.svelte';
 	import Form from '$lib/components/forms/Form.svelte';
 	import FormField from '$lib/components/forms/FormField.svelte';

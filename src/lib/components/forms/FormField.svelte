@@ -4,8 +4,10 @@
 		value: any;
 	};
 
+	export type OptionType = 'checkbox' | 'dropdown' | 'file' | 'text' | 'textarea';
+
 	export type FormFieldOptions = {
-		type: string;
+		type: OptionType;
 		name: string;
 		maxFiles?: number;
 		accept?: string;

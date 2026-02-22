@@ -41,7 +41,7 @@ export const actions = {
 
     const res = await db.delete(target).where(eq(target.id, id));
 
-    if(res.rowsAffected === 0) {
+    if(res.changes === 0) {
       return fail(404, { message: "Target not found" });
     } else {
       return { success: true, message: "Target deleted" };

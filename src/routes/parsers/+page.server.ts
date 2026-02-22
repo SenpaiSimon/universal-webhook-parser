@@ -48,7 +48,7 @@ export const actions = {
 
     const res = await db.delete(parser).where(eq(parser.id, id));
 
-    if(res.rowsAffected === 0) {
+    if(res.changes === 0) {
       return fail(404, { message: "Parser not found" });
     } else {
       return { success: true, message: "Parser deleted" };
