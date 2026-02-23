@@ -37,7 +37,7 @@
 			case 'email': {
 				options = [
 					{
-						title: 'Recipients',
+						title: 'Recipients - Comma Separated',
 						key: 'recipients',
 						value: parsedSettings.recipients,
 						fieldType: 'text'

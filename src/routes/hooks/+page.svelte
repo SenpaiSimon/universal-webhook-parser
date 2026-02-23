@@ -29,8 +29,4 @@
 	);
 </script>
 
-<SimpleHeader title="Hooks" />
-
-<ContentBox>
-	<BasicAddComponent listItems={hooks} name="Hook" title="Hooks" />
-</ContentBox>
+<BasicAddComponent listItems={hooks} name="Hook" title="Hooks" />

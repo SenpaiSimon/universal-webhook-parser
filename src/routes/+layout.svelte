@@ -1,8 +1,11 @@
 <script lang="ts">
 	import './app.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import { authClient } from '$lib/auth/auth-client';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
-	let { children } = $props();
+	let { children, data } = $props();
 </script>
 
 <svelte:head>
@@ -23,7 +26,21 @@
 			<li><a href="/targets">Targets</a></li>
 			<li><a href="/hooks">Hooks</a></li>
 			<li><a href="/settings">Settings</a></li>
+			<li><a href="/account">Account</a></li>
 		</ul>
+
+		{#if data.session}
+			<button
+				class="nav-button"
+				onclick={async () => {
+					await authClient.signOut();
+					await invalidateAll();
+					throw goto(resolve('/login'));
+				}}>Logout</button
+			>
+		{:else}
+			<a href="/login" class="nav-button">Login</a>
+		{/if}
 	</div>
 </nav>
 
@@ -79,6 +96,22 @@
 		background: rgba(255, 255, 255, 0.04);
 	}
 
+	.nav-button {
+		background: transparent;
+		border: none;
+		color: rgba(255, 255, 255, 0.92);
+		cursor: pointer;
+		padding: 6px 10px;
+		border-radius: 8px;
+		font-weight: 600;
+		font-size: 1rem;
+		text-decoration: none;
+	}
+
+	.nav-button:hover {
+		background: rgba(255, 255, 255, 0.04);
+	}
+
 	@media (max-width: 640px) {
 		.nav-inner {
 			flex-direction: column;
@@ -90,7 +123,8 @@
 			gap: 6px;
 			margin-top: 8px;
 		}
-		.nav-links a {
+		.nav-links a,
+		.nav-button {
 			padding: 8px 12px;
 		}
 	}

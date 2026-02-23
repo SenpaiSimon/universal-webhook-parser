@@ -4,7 +4,15 @@
 		value: any;
 	};
 
-	export type OptionType = 'checkbox' | 'dropdown' | 'file' | 'text' | 'textarea';
+	export type OptionType =
+		| 'checkbox'
+		| 'dropdown'
+		| 'file'
+		| 'text'
+		| 'textarea'
+		| 'email'
+		| 'password'
+		| 'number';
 
 	export type FormFieldOptions = {
 		type: OptionType;

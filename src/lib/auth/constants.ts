@@ -1,0 +1,1 @@
+export const OIDC_ID = "oidc";

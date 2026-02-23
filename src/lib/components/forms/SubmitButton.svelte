@@ -1,4 +1,9 @@
 <script lang="ts">
+	export type SubmitButtonFormMessage = {
+		type: 'success' | 'error';
+		text: string;
+	};
+
 	let {
 		id = 'submit-button',
 		submitting = false,
@@ -8,7 +13,7 @@
 	}: {
 		id?: string;
 		submitting?: boolean;
-		formMessage?: { type: 'success' | 'error'; text: string } | null;
+		formMessage?: SubmitButtonFormMessage | null;
 		submittingText?: string;
 		text?: string;
 	} = $props();
