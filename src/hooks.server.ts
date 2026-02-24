@@ -4,6 +4,7 @@ import { auth, LoadOidc, LoadPasswordAuthSettings } from "$lib/auth/auth";
 import { RateLimiter } from 'sveltekit-rate-limiter/server';
 import type { Session, User } from "better-auth";
 import { error, redirect, type Handle } from "@sveltejs/kit";
+import { ScrubTasks } from "$lib/helpers/taskCleaner";
 
 const limiter = new RateLimiter({
   IP: [60, 's'], // IP address limiter
@@ -43,4 +44,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 export const init = async () => {
 	await LoadOidc();
   await LoadPasswordAuthSettings();
+
+  // start task cleaner schedule every 2 minutes
+  setInterval(ScrubTasks, 2 * 60 * 1000);
 };

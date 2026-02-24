@@ -229,4 +229,5 @@ export const settingsGeneral = sqliteTable('settings_general', {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   disablePasswordAuth: integer('disable_password_auth', { mode: 'boolean' }).notNull(),
+  keepTaskHistoryCount: integer('keep_task_history_count').notNull(),
 });

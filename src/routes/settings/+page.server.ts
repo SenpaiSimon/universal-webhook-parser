@@ -54,7 +54,8 @@ export const load = async () => {
   let generalSettings = await db.query.settingsGeneral.findFirst();
   if(!generalSettings) {
     const res = await db.insert(settingsGeneral).values({
-      disablePasswordAuth: false
+      disablePasswordAuth: false,
+      keepTaskHistoryCount: 20
     }).returning();
 
     generalSettings = res[0];
@@ -124,6 +125,9 @@ export const actions = {
     const disablePasswordAuth = formData.get("disablePasswordAuth") as string;
     const disablePasswordAuthBool = disablePasswordAuth === "true";
 
+    const keepLastNTasks = formData.get("keepLastNTasks") as string;
+    const keepLastNTasksInt = parseInt(keepLastNTasks);
+
     if(disablePasswordAuthBool) {
       const res = await DisablePasswortAuthIsAllowed(locals.user.id);
 
@@ -133,7 +137,8 @@ export const actions = {
     }
 
     await db.update(settingsGeneral).set({
-      disablePasswordAuth: disablePasswordAuth === "true"
+      disablePasswordAuth: disablePasswordAuth === "true",
+      keepTaskHistoryCount: keepLastNTasksInt
     }).where(eq(settingsGeneral.id, id));
 
     LoadPasswordAuthSettings();

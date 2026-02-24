@@ -1,21 +1,31 @@
 <script lang="ts">
 	import ContentBox from '$lib/components/layout/ContentBox.svelte';
 	import SimpleHeader from '$lib/components/layout/SimpleHeader.svelte';
+	import TaskItem from '$lib/components/TaskItem.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
+
+	function getHookName(hookId: string) {
+		let hookName = hookId;
+		// look into hook array
+		data.hooks.find((hook) => {
+			if (hook.id === hookId) {
+				hookName = hook.title;
+				return true;
+			}
+			return false;
+		});
+		return hookName;
+	}
 </script>
 
 <SimpleHeader title="Dashboard" />
-<ContentBox>
-	<h1>Recent {data.tasks.length} Tasks</h1>
-	<ul>
+<ContentBox maxWidth="1200px">
+	<h1>Recent {data.maxTask} Tasks</h1>
+	<div class="task-list">
 		{#each data.tasks as task}
-			<li>
-				<div>
-					<p>Task {task.id} for target {task.hookId} is in state {task.startTime}</p>
-				</div>
-			</li>
+			<TaskItem {task} hookName={getHookName(task.hookId)} />
 		{/each}
-	</ul>
+	</div>
 </ContentBox>

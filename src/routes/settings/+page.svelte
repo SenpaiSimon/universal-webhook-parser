@@ -32,7 +32,7 @@
 </script>
 
 <SimpleHeader title="Settings" />
-<ContentBox showToc={true} tocTitle="Settings Sections">
+<ContentBox showToc={true} tocTitle="Settings Sections" maxWidth="1200px">
 	<h1>Email Settings</h1>
 
 	<Form
@@ -140,6 +140,11 @@
 			label="Disable Password Auth"
 			field={{ type: 'checkbox', name: 'disablePasswordAuth' }}
 			value={data.generalSettings.disablePasswordAuth}
+		/>
+		<FormField
+			label="Keep Last N Tasks"
+			field={{ type: 'number', name: 'keepLastNTasks' }}
+			value={data.generalSettings.keepTaskHistoryCount}
 		/>
 	</Form>
 </ContentBox>

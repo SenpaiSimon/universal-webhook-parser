@@ -6,6 +6,7 @@
 	export let showToc: boolean = false;
 	export let tocTitle: string = 'Navigation';
 	export let showBack: boolean = false;
+	export let backRef: string = './';
 
 	type Heading = {
 		level: number;
@@ -33,7 +34,10 @@
 			const level = parseInt(el.tagName.substring(1));
 
 			// Generate a unique ID from the text content, with a fallback for duplicates
-			const slug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+			const slug = text
+				.toLowerCase()
+				.replace(/\s+/g, '-')
+				.replace(/[^\w-]+/g, '');
 			const id = `${slug}-${index}`;
 			el.id = id;
 
@@ -45,7 +49,7 @@
 <div class="content-box" style="width: {maxWidth};" bind:this={container}>
 	{#if showBack}
 		<div class="back-nav">
-			<a href="./">
+			<a href={backRef}>
 				<svg
 					class="back-icon"
 					xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +83,12 @@
 					viewBox="0 0 20 20"
 					fill="currentColor"
 					aria-hidden="true"
-				><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+					><path
+						fill-rule="evenodd"
+						d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+						clip-rule="evenodd"
+					></path></svg
+				>
 			</button>
 			{#if isTocOpen}
 				<ul id="toc-list" transition:slide={{ duration: 250 }}>
@@ -98,59 +107,58 @@
 </div>
 
 <style>
-	.content>:global(h1:first-child) {
+	.content > :global(h1:first-child) {
 		margin-top: 1rem;
 	}
 
-	.content>:global(h1) {
+	.content > :global(h1) {
 		margin-top: 4rem;
 		font-size: 2em;
 	}
-	.content>:global(h2) {
+	.content > :global(h2) {
 		margin-top: 3rem;
 		font-size: 2em;
 	}
-	.content>:global(h3) {
+	.content > :global(h3) {
 		margin-top: 2rem;
 		font-size: 2em;
 	}
-	.content>:global(h4) {
+	.content > :global(h4) {
 		margin-top: 1rem;
 		font-size: 2em;
 	}
 
 	@media (max-width: 768px) {
-		.content>:global(h1) {
+		.content > :global(h1) {
 			font-size: 1.5em;
 		}
-		.content>:global(h2) {
+		.content > :global(h2) {
 			font-size: 1.2em;
 		}
-		.content>:global(h3) {
+		.content > :global(h3) {
 			font-size: 1em;
 		}
-		.content>:global(h4) {
+		.content > :global(h4) {
 			font-size: 1em;
 		}
 	}
 
-
-	.content>:global(h1::before) {
+	.content > :global(h1::before) {
 		content: '> ';
 		color: var(--baby-blue);
 	}
 
-	.content>:global(h2::before) {
+	.content > :global(h2::before) {
 		content: '> ';
 		color: var(--baby-blue);
 	}
 
-	.content>:global(h3::before) {
+	.content > :global(h3::before) {
 		content: '> ';
 		color: var(--baby-blue);
 	}
 
-	.content>:global(h4::before) {
+	.content > :global(h4::before) {
 		content: '> ';
 		color: var(--baby-blue);
 	}
