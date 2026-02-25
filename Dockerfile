@@ -9,6 +9,8 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
+RUN pnpm install -g deno
+
 # ---- Dependencies Stage ----
 FROM base AS deps
 COPY package*.json ./
