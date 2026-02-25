@@ -54,6 +54,7 @@ export async function LoadPasswordAuthSettings() {
 }
 
 export const auth = betterAuth({
+  secret: process.env.BETTER_AUTH_SECRET || "MySuperLongBuildSecret",
   database: drizzleAdapter(db, {
     provider: "sqlite"
   }),
@@ -61,6 +62,14 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true as boolean
   },
+  trustedOrigins: [process.env.BETTER_AUTH_URL || ''],
+	advanced: {
+		useSecureCookies: process.env.NODE_ENV === 'production',
+	},
+  rateLimit: {
+		window: 60,
+		maxRequests: 100,
+	},
   plugins: [
     passkey(),
     genericOAuth({

@@ -1,0 +1,18 @@
+# this is the development compose file
+services:
+  webhook-parser:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: WebhookParser
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./dev:/data
+    environment:
+      - TZ=Europe/Berlin
+      - NODE_ENV=production
+      - BETTER_AUTH_SECRET=SomeSuperNiceAndLongSecretWhichShallBe32CharactersLong
+      - BETTER_AUTH_URL=https://hook.dev.lan
+      - DATABASE_URL=/data/prod.db
