@@ -13,6 +13,13 @@ RUN pnpm install -g deno
 
 # ---- Dependencies Stage ----
 FROM base AS deps
+
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+    
 COPY package*.json ./
 # Install all dependencies (including dev dependencies needed for the build)
 RUN pnpm install --prod=false
