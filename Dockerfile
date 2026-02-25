@@ -1,7 +1,7 @@
 ARG NODE_VERSION=22
 
 # ---- Base Stage ----
-FROM node:${NODE_VERSION}-alpine AS base
+FROM node:${NODE_VERSION}-bookworm-slim AS base
 WORKDIR /app
 
 # Install pnpm
