@@ -33,6 +33,9 @@ RUN pnpm build
 # ---- Production Stage ----
 FROM base AS runner
 
+# Install curl for the healthcheck
+RUN apt-get update && apt-get install -y curl --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
 # Copy only the necessary files from the builder stage
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules
@@ -47,6 +50,10 @@ COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/entrypoint.sh ./entrypoint.sh
 
 RUN chmod +x ./entrypoint.sh
+
+# Add a Health check to call /api/health
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1
 
 EXPOSE 3000
 
