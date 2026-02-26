@@ -21,8 +21,14 @@ function resolveTemplate(template: string, data: TemplateData): string {
       return prev && prev[curr] !== undefined ? prev[curr] : undefined;
     }, data);
 
-    // Return the value found, or the original {match} if not found
-    return result !== undefined ? String(result) : match;
+    // Return the value found, or the original {match} if not found.
+    if (result === undefined) {
+      return match;
+    }
+    if (typeof result === 'object' && result !== null) {
+      return JSON.stringify(result, null, 2);
+    }
+    return String(result);
   });
 }
 
