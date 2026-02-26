@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import type { IncHookStatus } from '../../routes/api/hook/[id]/+server';
 
 	type Task = {
 		id: string;
@@ -13,11 +14,12 @@
 
 	let { task, hookName }: { task: Task; hookName: string } = $props();
 
-	function getStatusColor(status: string) {
+	function getStatusColor(status: IncHookStatus) {
 		switch (status) {
 			case 'success':
 				return '#4caf50';
 			case 'pending':
+			case 'skipped':
 				return '#ff9800';
 			case 'invalid':
 			case 'execution_error':
@@ -63,7 +65,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="task-item" onclick={() => goto(`/task/${task.id}`)}>
-	<div class="status-icon" style="color: {getStatusColor(task.status)}">
+	<div class="status-icon" style="color: {getStatusColor(task.status as IncHookStatus)}">
 		<i class="fa-solid {getStatusIcon(task.status)}"></i>
 	</div>
 	<div class="content">
@@ -73,7 +75,7 @@
 		</div>
 		<div class="meta">
 			<code class="id">{task.id}</code>
-			<span class="status" style="color: {getStatusColor(task.status)}">
+			<span class="status" style="color: {getStatusColor(task.status as IncHookStatus)}">
 				{task.status.replace(/_/g, ' ')}
 			</span>
 			{#if task.startTime && task.endTime}

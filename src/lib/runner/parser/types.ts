@@ -1,10 +1,13 @@
+
 export interface WebhookPayload {
   timestamp: string;
   data: any;
 }
 
+export type ResultAction = "continue" | "skip" | "error";
+
 export interface ParsedResult {
-  success: boolean;
+  action: ResultAction;
   title: string;
   message?: string;
   payload?: any;
@@ -17,8 +20,10 @@ interface WebhookPayload {
   data: any;
 }
 
+type ResultAction = "continue" | "skip" | "error";
+
 interface ParsedResult {
-  success: boolean;
+  action: ResultAction;
   title: string;
   message?: string;
   payload?: any;
@@ -31,7 +36,7 @@ export function genParserVarInit(payload: WebhookPayload): string {
   const block = `
 const payload: WebhookPayload = ${JSON.stringify(payload)};
 const result: ParsedResult = {
-  success: true,
+  action: "continue",
 	title: '',
 }
 `

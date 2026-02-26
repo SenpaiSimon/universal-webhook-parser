@@ -11,6 +11,7 @@
 			case 'success':
 				return '#4caf50';
 			case 'pending':
+			case 'skipped':
 				return '#ff9800';
 			case 'invalid':
 			case 'execution_error':

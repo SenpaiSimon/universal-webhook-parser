@@ -7,7 +7,7 @@ import { base64Decode } from '$lib/helpers/encoders.js';
 import { handleWebhook } from '$lib/runner/parser/webhook-handler.js';
 import { TargetMapping, type TargetType } from '$lib/targets/types.js';
 
-export type IncHookStatus = 'success' | 'invalid' | 'execution_error' | 'result_error' | 'pending' | 'webhook_error' | 'config_error';
+export type IncHookStatus = 'success' | 'invalid' | 'execution_error' | 'result_error' | 'pending' | 'webhook_error' | 'config_error' | 'skipped';
 
 export type IncHookMethod = 'GET' | 'POST';
 
@@ -77,11 +77,17 @@ async function HandleRequest(params: RouteParams, method: IncHookMethod, payload
     try {
         const res = await handleWebhook(code, payload);
 
-        // was it result?
-        if(!res.success) {
-            await setTaskState(taskEntry.id, 'result_error', { msg: "result.success was false"});
+        // did it work?
+        if(res.action == "error") {
+            await setTaskState(taskEntry.id, 'result_error', { msg: "result.action was 'error'"});
 
             return json(genResponse('result_error', id, method), { status: 500 });
+        }
+
+        // did we want to skip sending this?
+        if(res.action == "skip") {
+            await setTaskState(taskEntry.id, 'skipped', res);
+            return json(genResponse('skipped', id, method));
         }
         
         // send the result to the out hooks callback url with required method
