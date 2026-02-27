@@ -10,10 +10,14 @@
 		endTime: string | null;
 		status: string;
 		webhook_payload: string;
-		parsed_result: null | ParsedResult;
+		parsed_result: null | string;
 	};
 
 	let { task, hookName }: { task: Task; hookName: string } = $props();
+
+	let resTitleField = $derived(
+		task.parsed_result ? JSON.parse(task.parsed_result).title : 'No Result'
+	);
 
 	function getStatusColor(status: IncHookStatus) {
 		switch (status) {
@@ -74,7 +78,7 @@
 	</div>
 	<div class="content">
 		<div class="header">
-			<span class="hook-id">{hookName} - {task?.parsed_result?.title ?? ' No Result'}</span>
+			<span class="hook-id">{hookName} - {resTitleField}</span>
 			<span class="time">{formatDate(task.startTime)}</span>
 		</div>
 		<div class="meta">
