@@ -18,8 +18,9 @@
 		switch (status) {
 			case 'success':
 				return '#4caf50';
-			case 'pending':
 			case 'skipped':
+				return '#9e9e9e';
+			case 'pending':
 				return '#ff9800';
 			case 'invalid':
 			case 'execution_error':
@@ -40,6 +41,8 @@
 				return 'fa-clock';
 			case 'invalid':
 				return 'fa-ban';
+			case 'skipped':
+				return 'fa-angles-right';
 			case 'execution_error':
 			case 'result_error':
 			case 'webhook_error':
