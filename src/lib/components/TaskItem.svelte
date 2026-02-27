@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { ParsedResult } from '$lib/runner/parser/types';
 	import type { IncHookStatus } from '../../routes/api/hook/[id]/+server';
 
 	type Task = {
@@ -15,9 +14,8 @@
 
 	let { task, hookName }: { task: Task; hookName: string } = $props();
 
-	let resTitleField = $derived(
-		task.parsed_result ? JSON.parse(task.parsed_result).title : 'No Result'
-	);
+	let resultJson = $derived(task.parsed_result ? JSON.parse(task.parsed_result) : {});
+	let resTitleField = $derived(resultJson.title ? resultJson.title : 'No Result');
 
 	function getStatusColor(status: IncHookStatus) {
 		switch (status) {
