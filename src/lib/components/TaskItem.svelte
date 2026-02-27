@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import type { ParsedResult } from '$lib/runner/parser/types';
 	import type { IncHookStatus } from '../../routes/api/hook/[id]/+server';
 
 	type Task = {
@@ -9,7 +10,7 @@
 		endTime: string | null;
 		status: string;
 		webhook_payload: string;
-		parsed_result: string | null;
+		parsed_result: null | ParsedResult;
 	};
 
 	let { task, hookName }: { task: Task; hookName: string } = $props();
@@ -73,7 +74,7 @@
 	</div>
 	<div class="content">
 		<div class="header">
-			<span class="hook-id">{hookName}</span>
+			<span class="hook-id">{hookName} - {task?.parsed_result?.title ?? ' No Result'}</span>
 			<span class="time">{formatDate(task.startTime)}</span>
 		</div>
 		<div class="meta">
