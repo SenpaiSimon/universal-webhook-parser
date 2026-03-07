@@ -19,7 +19,12 @@ console.log(payload);        // this is what the webhook passed into here
 console.log(result);         // please use this variable to enter your results
 console.log(result.title);   // can be used to express some basic heading
 console.log(result.message); // can be used to add a body to the message
-console.log(result.payload); // here you can put any object as additional payload
+console.log(result.payload); // here you can put any object as additional payload like this
+// const newPayload = {
+//   field1: "value",
+//   field2: "value"
+// }
+// result.payload = newPayload;
 console.log(result.action);  // this is used to signal what to to afterwards
 // "error"    signals that something went from while parsing
 // "skip"     signals that you dont want to enter the target stage and just let it be

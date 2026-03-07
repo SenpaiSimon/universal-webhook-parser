@@ -29,6 +29,19 @@
 		return options;
 	}
 
+	function CreateHaDropDown(): FormFieldDropdownOption[] {
+		const options: FormFieldDropdownOption[] = [];
+
+		for (const target of data.haNotifyTargets) {
+			options.push({
+				label: target,
+				value: target
+			});
+		}
+
+		return options;
+	}
+
 	function CreateTargetOptions(type: TargetType, settings: string): OptionEntry[] {
 		let options: OptionEntry[] = [];
 		const parsedSettings = JSON.parse(settings);
@@ -75,6 +88,43 @@
 							{ label: 'GET', value: 'GET' },
 							{ label: 'POST', value: 'POST' }
 						]
+					}
+				];
+				break;
+			}
+
+			case 'homeAssistant': {
+				options = [
+					{
+						title: 'Recipient',
+						key: 'recipient',
+						value: parsedSettings.recipient,
+						fieldType: 'dropdown',
+						dropdownOptions: CreateHaDropDown()
+					},
+					{
+						title: 'Title Template',
+						key: 'titleTemplate',
+						value: parsedSettings.titleTemplate,
+						fieldType: 'text'
+					},
+					{
+						title: 'Body Template',
+						key: 'bodyTemplate',
+						value: parsedSettings.bodyTemplate,
+						fieldType: 'textarea'
+					},
+					{
+						title: 'Image Url Template',
+						key: 'imageUrl',
+						value: parsedSettings.imageUrl,
+						fieldType: 'text'
+					},
+					{
+						title: 'Notification Group Template',
+						key: 'group',
+						value: parsedSettings.group,
+						fieldType: 'text'
 					}
 				];
 				break;

@@ -9,6 +9,35 @@ function GetAllAvailableTargets(): TargetType[] {
   return [...ALL_TARGET_TYPES];
 }
 
+async function haNotifyTargets(): Promise<string[]> {
+  const haSettings = await db.query.settingsHa.findFirst();
+
+  if(!haSettings || haSettings.url.length === 0 || haSettings.token.length === 0) {
+    return [];
+  }
+
+  try {
+    const res = await fetch(`${haSettings.url}/api/services`, {
+      headers: {
+        "Authorization": `Bearer ${haSettings.token}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (res.ok) {
+      const data = await res.json() as any[];
+      const notifyDomain = data.find((d: any) => d.domain === "notify");
+      if (notifyDomain && notifyDomain.services) {
+        return Object.keys(notifyDomain.services);
+      }
+    }
+  } catch (e) {
+    console.error("Failed to fetch HA services", e);
+  }
+
+  return [];
+}
+
 export const load: ServerLoad = async ({ params }) => {
   const id = params.id as string;
 
@@ -20,7 +49,8 @@ export const load: ServerLoad = async ({ params }) => {
 
   return {
     target: targetEntry,
-    availableTargets: GetAllAvailableTargets()
+    availableTargets: GetAllAvailableTargets(),
+    haNotifyTargets: await haNotifyTargets()
   }
 }
 

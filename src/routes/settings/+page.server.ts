@@ -1,6 +1,6 @@
 import { LoadOidc, LoadPasswordAuthSettings } from "$lib/auth/auth";
 import { db } from "$lib/server/db";
-import { account, passkey, settingsEmail, settingsGeneral, settingsOidc } from "$lib/server/db/schema";
+import { account, passkey, settingsEmail, settingsGeneral, settingsHa, settingsOidc } from "$lib/server/db/schema";
 import { fail, type Actions } from "@sveltejs/kit";
 import { and, eq } from "drizzle-orm";
 
@@ -35,6 +35,17 @@ export const load = async () => {
 
     emailSettings = res[0];
   }
+  
+  // home assistant settings
+  let haSettings = await db.query.settingsHa.findFirst();
+  if(!haSettings) { 
+    const res = await db.insert(settingsHa).values({
+      url: "",
+      token: ""
+    }).returning();
+
+    haSettings = res[0];
+  }
 
   // oidc settings
   let oidcSettings = await db.query.settingsOidc.findFirst();
@@ -64,7 +75,8 @@ export const load = async () => {
   return {
     emailSettings,
     oidcSettings,
-    generalSettings 
+    generalSettings,
+    haSettings
   };
 }
 
@@ -86,6 +98,23 @@ export const actions = {
       password,
       fromAddress
     }).where(eq(settingsEmail.id, id));
+
+    return {
+      success: true,
+      message: "Updated"
+    };
+  },
+  updateHaSettings: async ({ request }) => {
+    const formData = await request.formData();
+
+    const id = formData.get("id") as string;
+    const url = formData.get("url") as string;
+    const token = formData.get("token") as string;
+
+    await db.update(settingsHa).set({
+      url,
+      token
+    }).where(eq(settingsHa.id, id));
 
     return {
       success: true,

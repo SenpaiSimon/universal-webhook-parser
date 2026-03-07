@@ -213,6 +213,14 @@ export const settingsEmail = sqliteTable('settings_email', {
 	fromAddress: text('from_address').notNull()
 });
 
+export const settingsHa = sqliteTable('settings_ha', {
+	id: text('id')
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+	url: text('url').notNull(),
+	token: text('token').notNull()
+});
+
 export const settingsOidc = sqliteTable('settings_oidc', {
   id: text('id')
     .primaryKey()

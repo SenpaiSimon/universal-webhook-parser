@@ -1,9 +1,10 @@
 import type { ParsedResult } from "$lib/runner/parser/types";
 import { HandleEmailTarget } from "./email";
+import { HandleHaTarget } from "./ha";
 import { HandleWebhookTarget } from "./webhook";
 
 // what do we support?
-export const ALL_TARGET_TYPES = ["webhook", "email"] as const;
+export const ALL_TARGET_TYPES = ["webhook", "email", "homeAssistant"] as const;
 
 // derive type
 export type TargetType = typeof ALL_TARGET_TYPES[number];
@@ -18,6 +19,14 @@ export type EmailTargetSettings = {
   recipients: string;
   subjectTemplate: string;
   bodyTemplate: string;
+}
+
+export type HaTargetSettings = {
+  recipient: string;
+  titleTemplate: string;
+  bodyTemplate: string;
+  imageUrl: string;
+  group: string;
 }
 
 // add settings datatype for each one
@@ -35,5 +44,9 @@ export const TargetMapping: Record<TargetType, TargetMappingEntry> = {
   email: {
     type: "email",
     handler: HandleEmailTarget
+  },
+  homeAssistant: {
+    type: "homeAssistant",
+    handler: HandleHaTarget
   }
 }

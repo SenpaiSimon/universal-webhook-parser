@@ -75,6 +75,29 @@
 		/>
 	</Form>
 
+	<h1>Home Assistant Settings</h1>
+	<Form
+		endpoint="?/updateHaSettings"
+		submitButtonText="Update Home Assistant Settings"
+		submittingText="Updating..."
+		maxWidth="600px"
+		resetFormOnSuccess={false}
+	>
+		<input type="hidden" name="id" value={data.haSettings.id} />
+		<FormField
+			label="URL"
+			field={{ type: 'text', name: 'url' }}
+			value={data.haSettings.url}
+			required={true}
+		/>
+		<FormField
+			label="Access Token"
+			field={{ type: 'password', name: 'token' }}
+			value={data.haSettings.token}
+			required={true}
+		/>
+	</Form>
+
 	<h1>OIDC Settings</h1>
 	<button class="redirect-uri-box" onclick={copyRedirectUri} type="button" title="Click to copy">
 		<span class="label">Redirect URI:</span>
