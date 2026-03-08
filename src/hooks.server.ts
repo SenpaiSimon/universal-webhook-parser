@@ -23,9 +23,9 @@ export const handle: Handle = async ({ event, resolve }) => {
     event.locals.user = session.user as User;
   }
 
-  if (await limiter.isLimited(event)) {
-		throw error(429, 'Too Many Requests');
-	} 
+  // if (await limiter.isLimited(event)) {
+	// 	throw error(429, 'Too Many Requests');
+	// } 
 
   // is it protected?
   let protectedRoute = true;
