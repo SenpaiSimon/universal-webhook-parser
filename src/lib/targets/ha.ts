@@ -4,7 +4,7 @@ import { db } from "$lib/server/db";
 import type { HaTargetSettings } from "./types";
 
 export async function HandleHaTarget(payload: ParsedResult, settings: any) {
-  const { recipient, titleTemplate, bodyTemplate, imageUrl, group } = settings as HaTargetSettings;
+  const { recipient, titleTemplate, bodyTemplate, imageUrl, group, clickLink } = settings as HaTargetSettings;
 
   const haSettings = await db.query.settingsHa.findFirst();
 
@@ -16,6 +16,7 @@ export async function HandleHaTarget(payload: ParsedResult, settings: any) {
   const resolvedBody = resolveTemplate(bodyTemplate, payload as any);
   const resolvedImageUrl = resolveTemplate(imageUrl, payload as any);
   const resolvedGroup = resolveTemplate(group, payload as any);
+  const resolvedClickLink = resolveTemplate(clickLink, payload as any);
 
   const body: any = {
     message: resolvedBody,
@@ -23,11 +24,23 @@ export async function HandleHaTarget(payload: ParsedResult, settings: any) {
   };
 
   const data: any = {};
+
+  // the image
   if (resolvedImageUrl.length > 0) {
     data.icon_url = resolvedImageUrl;
   }
+
+  // grouping
   if (resolvedGroup.length > 0) {
     data.group = resolvedGroup;
+  }
+
+  // on click action
+  if (resolvedClickLink.length > 0) {
+    // ios
+    data.url = resolvedClickLink;
+    // android
+    data.clickAction = resolvedClickLink;
   }
 
   if (Object.keys(data).length > 0) {

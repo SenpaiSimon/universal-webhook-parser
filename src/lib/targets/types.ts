@@ -27,6 +27,7 @@ export type HaTargetSettings = {
   bodyTemplate: string;
   imageUrl: string;
   group: string;
+  clickLink: string;
 }
 
 // add settings datatype for each one

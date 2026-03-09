@@ -125,6 +125,12 @@
 						key: 'group',
 						value: parsedSettings.group,
 						fieldType: 'text'
+					},
+					{
+						title: 'Click Action Link Template',
+						key: 'clickLink',
+						value: parsedSettings.clickLink,
+						fieldType: 'text'
 					}
 				];
 				break;
