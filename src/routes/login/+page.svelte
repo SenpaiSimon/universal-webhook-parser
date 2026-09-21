@@ -176,8 +176,8 @@
 					onclick={async () => {
 						inProgress = true;
 						try {
-							await authClient.signIn.oauth2({
-								providerId: OIDC_ID,
+							await authClient.signIn.social({
+								provider: OIDC_ID,
 								callbackURL: next,
 								disableRedirect: false
 							});

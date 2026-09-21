@@ -11,7 +11,7 @@
 	let { data }: { data: PageData } = $props();
 
 	function getOidcRedirectUri() {
-		return `${window.location.origin}/oauth2/callback/${OIDC_ID}`;
+		return `${window.location.origin}/api/auth/callback/${OIDC_ID}`;
 	}
 
 	let oidcRedirectUri = $state('');

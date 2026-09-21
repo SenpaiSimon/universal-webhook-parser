@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Install pnpm
 ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
+ENV PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH"
 RUN corepack enable
 
 RUN pnpm install -g deno
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
     g++ \
     && rm -rf /var/lib/apt/lists/*
     
-COPY package*.json ./
+COPY package*.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # Install all dependencies (including dev dependencies needed for the build)
 RUN pnpm install --prod=false
 

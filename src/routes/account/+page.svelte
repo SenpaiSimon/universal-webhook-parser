@@ -194,8 +194,8 @@
 
 					const id = OIDC_ID;
 
-					const { data, error } = await authClient.oauth2.link({
-						providerId: id,
+					const { data, error } = await authClient.linkSocial({
+						provider: id,
 						callbackURL: '/login'
 					});
 
